@@ -3,48 +3,48 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
 
 export const services = [
   {
     num: "01", title: "Commercial Renovation",
-    img: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80&fit=crop",
+    img: "/Drop Ceiling (D&B Office)/20231102_160934.jpg",
     items: [
-      { label: "Framing & Ceiling Tiles",                    img: "/Framing and Ceiling tile.jpg" },
-      { label: "Full Wall Scope",                             img: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=1200&q=80&fit=crop" },
-      { label: "Commercial Carpet",                          img: "/carpet-tile.webp" },
-      { label: "Door Installation",                          img: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1200&q=80&fit=crop" },
+      { label: "Framing & Ceiling Tiles",  img: "/Framing and Ceiling tile.jpg" },
+      { label: "Full Wall Scope",          img: "/Wall Repair (D&B Event room)/1.jpg" },
+      { label: "Commercial Carpet",        img: "/carpet-tile.webp" },
+      { label: "Door Installation",        img: "/Commercial Door Project/Frame & Door Replacement-1.jpg" },
     ],
   },
   {
     num: "02", title: "Exterior Solutions",
-    img: "https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=1200&q=80&fit=crop",
+    img: "/Concrete Work.jpg",
     items: [
-      { label: "Concrete Work",      img: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80&fit=crop" },
-      { label: "Brick Repairs",      img: "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=1200&q=80&fit=crop" },
-      { label: "Siding Installation",img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80&fit=crop" },
-      { label: "Exterior Paint",     img: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=1200&q=80&fit=crop" },
+      { label: "Concrete Work",       img: "/Concrete Project/Concrete-1.jpg" },
+      { label: "Brick Repairs",       img: "/Brick Project/Brick-1.jpg" },
+      { label: "Siding Installation", img: "/Siding Project/Siding-1.jpg" },
+      { label: "Exterior Paint",      img: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=1200&q=80&fit=crop" },
     ],
   },
   {
     num: "03", title: "Interior Solutions",
-    img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&q=80&fit=crop",
+    img: "/Interior_Solutions.JPG",
     items: [
-      { label: "Countertop & Tile",  img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&q=80&fit=crop" },
-      { label: "Demo & Trash Out",   img: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1200&q=80&fit=crop" },
-      { label: "Texture & Paint",    img: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=1200&q=80&fit=crop" },
-      { label: "Flooring",           img: "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1200&q=80&fit=crop" },
-      { label: "Insulation",         img: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80&fit=crop" },
+      { label: "Countertop & Tile", img: "/CountertopJPG.JPG" },
+      { label: "Demo & Trash Out",  img: "/Wall Repair (D&B Event room)/3.jpg" },
+      { label: "Texture & Paint",   img: "/Wall Repair (D&B Event room)/5.jpg" },
+      { label: "Flooring",          img: "/Flooring.jpg" },
+      { label: "Insulation",        img: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80&fit=crop" },
     ],
   },
   {
     num: "04", title: "Electrical, Plumbing & HVAC",
-    img: "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=1200&q=80&fit=crop",
+    img: "/HVAC-Technician.jpg",
     items: [
-      { label: "Licensed Electricians",         img: "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=1200&q=80&fit=crop" },
-      { label: "Plumbing Installation & Repair", img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80&fit=crop" },
+      { label: "Licensed Electricians",          img: "/Electrical.jpg" },
+      { label: "Plumbing Installation & Repair", img: "/Plumbing Installation.jpg" },
       { label: "HVAC Installation & Service",    img: "/HVAC-Technician.jpg" },
       { label: "Code Compliance & Permits",      img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80&fit=crop" },
     ],
@@ -70,10 +70,17 @@ export default function ServicesSection() {
   const [expanded, setExpanded] = useState<number | null>(null);
   const activeImg = getActiveImg(hovered);
 
-  const handleServiceClick = (si: number, e: React.MouseEvent) => {
+  const handleServiceEnter = (si: number) => {
     if (window.innerWidth >= 768) {
-      e.preventDefault();
-      setExpanded(expanded === si ? null : si);
+      setExpanded(si);
+      setHovered({ service: si, item: null });
+    }
+  };
+
+  const handleServiceLeave = () => {
+    if (window.innerWidth >= 768) {
+      setExpanded(null);
+      setHovered(null);
     }
   };
 
@@ -125,7 +132,7 @@ export default function ServicesSection() {
 
         <div className="w-full md:w-1/2 divide-y divide-[#1a1a1a]">
           {services.map((svc, si) => {
-            const isServiceHovered = hovered?.service === si;
+            const isActive = hovered?.service === si || expanded === si;
             const isExpanded = expanded === si;
             return (
               <motion.div
@@ -133,46 +140,43 @@ export default function ServicesSection() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: si * 0.05, duration: 0.45, ease }}
+                onMouseEnter={() => handleServiceEnter(si)}
+                onMouseLeave={handleServiceLeave}
               >
-                {/* Mobile: link to contact | Desktop: toggle sub-menu */}
+                {/* Service row — mobile: link to /contact | desktop: hover-driven */}
                 <Link
                   href="/contact"
-                  onClick={(e) => handleServiceClick(si, e)}
-                  onMouseEnter={() => setHovered({ service: si, item: null })}
-                  onMouseLeave={() => setHovered(null)}
                   className="flex items-center justify-between gap-6 py-3"
                 >
                   <div className="flex items-center gap-5">
                     <span className="text-[#3f3f46] text-[10px] tracking-[0.2em] font-medium w-5">{svc.num}</span>
-                    <h3 className={`text-[16px] font-semibold tracking-[-0.01em] transition-colors duration-200 ${isServiceHovered || isExpanded ? "text-[#b91c1c]" : "text-white"}`}>
+                    <h3 className={`text-[16px] font-semibold tracking-[-0.01em] transition-colors duration-200 ${isActive ? "text-[#b91c1c]" : "text-white"}`}>
                       {svc.title}
                     </h3>
                   </div>
-                  {/* Mobile: arrow → | Desktop: chevron ↓ */}
-                  <ArrowRight size={12} className={`flex-shrink-0 md:hidden transition-all duration-200 ${isServiceHovered ? "text-[#b91c1c] translate-x-0.5" : "text-[#27272a]"}`} />
-                  <ChevronDown size={12} className={`flex-shrink-0 hidden md:block transition-all duration-200 ${isExpanded ? "text-[#b91c1c] rotate-180" : isServiceHovered ? "text-[#b91c1c]" : "text-[#27272a]"}`} />
+                  <ArrowRight size={12} className={`flex-shrink-0 transition-all duration-200 ${isActive ? "text-[#b91c1c] translate-x-0.5" : "text-[#27272a]"}`} />
                 </Link>
 
-                {/* Sub-items — desktop only */}
+                {/* Sub-items — desktop only, expand on hover */}
                 <AnimatePresence>
                   {isExpanded && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.25, ease }}
+                      transition={{ duration: 0.2, ease }}
                       className="hidden md:block overflow-hidden"
                     >
-                      <div className="pb-3 flex flex-col gap-0">
+                      <div className="pb-3 flex flex-col">
                         {svc.items.map((item, ii) => (
                           <div
                             key={item.label}
                             onMouseEnter={() => setHovered({ service: si, item: ii })}
                             onMouseLeave={() => setHovered({ service: si, item: null })}
-                            className="flex items-center gap-4 py-2 pl-10 cursor-default group"
+                            className="flex items-center gap-4 py-2 pl-10 cursor-default"
                           >
-                            <span className={`w-1 h-1 rounded-full flex-shrink-0 transition-colors duration-150 ${hovered?.service === si && hovered?.item === ii ? "bg-[#b91c1c]" : "bg-[#3f3f46]"}`} />
-                            <span className={`text-[13px] transition-colors duration-150 ${hovered?.service === si && hovered?.item === ii ? "text-white" : "text-[#71717a]"}`}>
+                            <span className={`w-1 h-1 rounded-full flex-shrink-0 transition-colors duration-150 ${hovered?.item === ii ? "bg-[#b91c1c]" : "bg-[#3f3f46]"}`} />
+                            <span className={`text-[13px] transition-colors duration-150 ${hovered?.item === ii ? "text-white" : "text-[#71717a]"}`}>
                               {item.label}
                             </span>
                           </div>
