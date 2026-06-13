@@ -22,7 +22,7 @@ export const services = [
     num: "02", title: "Exterior Solutions",
     img: "/Concrete Work.jpg",
     items: [
-      { label: "Concrete Work",       img: "/Concrete Project/Concrete-1.jpg" },
+      { label: "Concrete Work",       img: "/Concrete Work.jpg" },
       { label: "Brick Repairs",       img: "/Brick Project/Brick-1.jpg" },
       { label: "Siding Installation", img: "/Siding Project/Siding-1.jpg" },
       { label: "Exterior Paint",      img: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=1200&q=80&fit=crop" },
@@ -94,7 +94,7 @@ export default function ServicesSection() {
           className="absolute inset-0"
         >
           <img
-            src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80&fit=crop"
+            src="/Services.jpeg"
             alt=""
             className="w-full h-full object-cover opacity-60"
           />

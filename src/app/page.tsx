@@ -109,6 +109,12 @@ export default function Home() {
           <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(ellipse 80% 60% at 20% 60%, #b91c1c12 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 80% 20%, #b91c1c08 0%, transparent 50%)" }} />
           <div className="absolute inset-0 opacity-[0.025]" style={{ backgroundImage: "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)", backgroundSize: "100px 100px" }} />
 
+          {/* Hero photo — right half, desktop only */}
+          <div className="hidden md:block absolute right-0 top-0 w-1/2 h-full">
+            <img src="/project-1.webp" alt="" className="w-full h-full object-cover opacity-40" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/60 to-[#0a0a0a]/20" />
+          </div>
+
           <div className="relative z-10 w-full max-w-6xl mx-auto px-6 md:px-12 pt-28 pb-16 md:py-0">
             <motion.div variants={fadeIn} initial="hidden" animate="visible" custom={0}>
               <Label>Dallas · Fort Worth · Houston · Austin</Label>
