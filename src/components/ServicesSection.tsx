@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
 
@@ -66,14 +66,21 @@ function getActiveKey(active: ActiveState): string {
 }
 
 export default function ServicesSection() {
-  const [active, setActive] = useState<ActiveState>(null);
-  const activeImg = getActiveImg(active);
+  const [hovered, setHovered] = useState<ActiveState>(null);
+  const [expanded, setExpanded] = useState<number | null>(null);
+  const activeImg = getActiveImg(hovered);
+
+  const handleServiceClick = (si: number, e: React.MouseEvent) => {
+    if (window.innerWidth >= 768) {
+      e.preventDefault();
+      setExpanded(expanded === si ? null : si);
+    }
+  };
 
   return (
     <div className="relative w-full h-full">
       {/* Image panel — right half, desktop only */}
       <div className="hidden md:block absolute right-0 top-0 w-1/2 h-full pointer-events-none z-0">
-        {/* Default image */}
         <motion.div
           animate={{ opacity: activeImg ? 0 : 1 }}
           transition={{ duration: 0.35, ease }}
@@ -87,11 +94,10 @@ export default function ServicesSection() {
           <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent" />
         </motion.div>
 
-        {/* Hover images */}
         <AnimatePresence mode="wait">
           {activeImg && (
             <motion.div
-              key={getActiveKey(active)}
+              key={getActiveKey(hovered)}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -119,7 +125,8 @@ export default function ServicesSection() {
 
         <div className="w-full md:w-1/2 divide-y divide-[#1a1a1a]">
           {services.map((svc, si) => {
-            const isServiceActive = active?.service === si;
+            const isServiceHovered = hovered?.service === si;
+            const isExpanded = expanded === si;
             return (
               <motion.div
                 key={svc.num}
@@ -127,25 +134,66 @@ export default function ServicesSection() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: si * 0.05, duration: 0.45, ease }}
               >
+                {/* Mobile: link to contact | Desktop: toggle sub-menu */}
                 <Link
                   href="/contact"
-                  onMouseEnter={() => setActive({ service: si, item: null })}
-                  onMouseLeave={() => setActive(null)}
+                  onClick={(e) => handleServiceClick(si, e)}
+                  onMouseEnter={() => setHovered({ service: si, item: null })}
+                  onMouseLeave={() => setHovered(null)}
                   className="flex items-center justify-between gap-6 py-3"
                 >
                   <div className="flex items-center gap-5">
                     <span className="text-[#3f3f46] text-[10px] tracking-[0.2em] font-medium w-5">{svc.num}</span>
-                    <h3 className={`text-[16px] font-semibold tracking-[-0.01em] transition-colors duration-200 ${isServiceActive ? "text-[#b91c1c]" : "text-white"}`}>
+                    <h3 className={`text-[16px] font-semibold tracking-[-0.01em] transition-colors duration-200 ${isServiceHovered || isExpanded ? "text-[#b91c1c]" : "text-white"}`}>
                       {svc.title}
                     </h3>
                   </div>
-                  <ArrowRight size={12} className={`flex-shrink-0 transition-all duration-200 ${isServiceActive ? "text-[#b91c1c] translate-x-0.5" : "text-[#27272a]"}`} />
+                  {/* Mobile: arrow → | Desktop: chevron ↓ */}
+                  <ArrowRight size={12} className={`flex-shrink-0 md:hidden transition-all duration-200 ${isServiceHovered ? "text-[#b91c1c] translate-x-0.5" : "text-[#27272a]"}`} />
+                  <ChevronDown size={12} className={`flex-shrink-0 hidden md:block transition-all duration-200 ${isExpanded ? "text-[#b91c1c] rotate-180" : isServiceHovered ? "text-[#b91c1c]" : "text-[#27272a]"}`} />
                 </Link>
+
+                {/* Sub-items — desktop only */}
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.25, ease }}
+                      className="hidden md:block overflow-hidden"
+                    >
+                      <div className="pb-3 flex flex-col gap-0">
+                        {svc.items.map((item, ii) => (
+                          <div
+                            key={item.label}
+                            onMouseEnter={() => setHovered({ service: si, item: ii })}
+                            onMouseLeave={() => setHovered({ service: si, item: null })}
+                            className="flex items-center gap-4 py-2 pl-10 cursor-default group"
+                          >
+                            <span className={`w-1 h-1 rounded-full flex-shrink-0 transition-colors duration-150 ${hovered?.service === si && hovered?.item === ii ? "bg-[#b91c1c]" : "bg-[#3f3f46]"}`} />
+                            <span className={`text-[13px] transition-colors duration-150 ${hovered?.service === si && hovered?.item === ii ? "text-white" : "text-[#71717a]"}`}>
+                              {item.label}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             );
           })}
         </div>
 
+        {/* Free Consultation button — desktop only */}
+        <div className="hidden md:block mt-10 w-full md:w-1/2">
+          <Link href="/contact"
+            className="group inline-flex items-center gap-2.5 bg-[#b91c1c] hover:bg-[#dc2626] text-white text-[11px] font-medium tracking-[0.2em] uppercase px-8 py-4 transition-colors duration-200">
+            Free Consultation
+            <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform duration-200" />
+          </Link>
+        </div>
       </div>
     </div>
   );
